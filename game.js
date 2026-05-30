@@ -52,6 +52,8 @@
     resBonus: $("#res-bonus"),
     btnPlayAgain: $("#btn-play-again"),
     btnHome: $("#btn-home"),
+    btnMute: $("#btn-mute"),
+    resMessage: $("#res-message"),
   };
 
   // ---- 畫面切換 ----
@@ -74,7 +76,11 @@
         `<span class="difficulty-btn__emoji">${d.emoji}</span>` +
         `<span class="difficulty-btn__name">${d.name}</span>` +
         `<span class="difficulty-btn__time">每題 ${d.seconds} 秒</span>`;
-      btn.addEventListener("click", () => startGame(d.id));
+      btn.addEventListener("click", () => {
+        sfx("unlock");
+        sfx("click");
+        startGame(d.id);
+      });
       el.difficultyOptions.appendChild(btn);
     });
   }
@@ -87,6 +93,57 @@
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+
+  // ---- 情緒回饋訊息 ----
+  const PRAISE_ALL = [
+    "太完美了！三題全對！🎉",
+    "全中！你是中文字高手！🏆",
+    "滿分回合，超強的！🌟",
+    "哇！完全正確，太厲害了！✨",
+  ];
+  const PRAISE_SOME = [
+    "答對了，做得好！👍",
+    "不錯喔，這個感覺對了！🎯",
+    "很好，你越來越厲害了！💪",
+    "答對囉，繼續保持！😄",
+  ];
+  const ENCOURAGE = [
+    "沒關係，再試一次就會了！💪",
+    "別灰心，下一題你一定行！🌈",
+    "差一點點，加油！你做得到！🔥",
+    "勇敢猜，錯了也沒關係！😊",
+  ];
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+  // 播放音效（WG_sound 不存在時自動略過）
+  function sfx(name) {
+    if (window.WG_sound && typeof window.WG_sound[name] === "function") window.WG_sound[name]();
+  }
+
+  // 更新靜音鈕圖示
+  function updateMuteIcon() {
+    if (!el.btnMute) return;
+    const m = window.WG_sound ? window.WG_sound.isMuted() : false;
+    el.btnMute.textContent = m ? "🔇" : "🔊";
+    el.btnMute.setAttribute("aria-label", m ? "開啟音效" : "靜音");
+    el.btnMute.classList.toggle("is-muted", m);
+  }
+
+  // 慶祝彩帶（自含、無資產；無 document 時略過）
+  function confetti(count) {
+    if (typeof document === "undefined" || !document.body) return;
+    const colors = ["#6366f1", "#f59e0b", "#16a34a", "#ec4899", "#06b6d4", "#f43f5e"];
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("div");
+      p.className = "confetti-piece";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = colors[i % colors.length];
+      p.style.animationDelay = Math.random() * 0.3 + "s";
+      p.style.animationDuration = 1.3 + Math.random() * 0.7 + "s";
+      document.body.appendChild(p);
+      setTimeout(function () { p.remove(); }, 2200);
+    }
   }
 
   // ---- 開始一場新遊戲 ----
@@ -244,11 +301,21 @@
     state.correctCells += roundCorrect;
     el.score.textContent = String(state.score);
 
-    // 回饋訊息
-    let msg = `答對 ${roundCorrect} / ${CELLS_PER_ROUND} 格，得 ${gained} 分`;
-    if (bonus) msg += "　全對！額外 +10 🎉";
-    if (auto) msg = "⏰ 時間到，自動送出！　" + msg;
-    el.feedback.textContent = msg;
+    // 音效 + 情緒回饋
+    let praise;
+    if (roundCorrect === CELLS_PER_ROUND) { praise = pick(PRAISE_ALL); sfx("bonus"); confetti(80); }
+    else if (roundCorrect >= 1) { praise = pick(PRAISE_SOME); sfx("correct"); }
+    else { praise = pick(ENCOURAGE); sfx("wrong"); }
+
+    let detail = `答對 ${roundCorrect} / ${CELLS_PER_ROUND} 格，得 ${gained} 分`;
+    if (bonus) detail += "　全對 +10！";
+    if (auto) detail = "⏰ 時間到，自動送出　·　" + detail;
+    el.feedback.innerHTML =
+      `<span class="feedback__main">${praise}</span>` +
+      `<span class="feedback__detail">${detail}</span>`;
+    el.feedback.classList.remove("feedback--pop");
+    void el.feedback.offsetWidth; // 強制重排以重新觸發彈跳動畫
+    el.feedback.classList.add("feedback--pop");
 
     // 按鈕狀態：已送出
     el.btnSubmit.hidden = true;
@@ -288,16 +355,36 @@
       ? `全對回合：${state.bonusRounds} 回（額外 +${state.bonusRounds * 10} 分）`
       : "這次沒有全對的回合，再挑戰看看吧！";
 
+    // 依正確率給總評 + 音效 + 慶祝
+    let resMsg, great = false;
+    if (accuracy >= 90) { resMsg = "🏆 字詞高手！太厲害了！"; great = true; }
+    else if (accuracy >= 70) { resMsg = "🌟 表現很棒，繼續保持！"; great = true; }
+    else if (accuracy >= 50) { resMsg = "💪 不錯喔，再多練習會更強！"; }
+    else { resMsg = "🌈 沒關係，多玩幾次一定會進步！"; }
+    if (el.resMessage) el.resMessage.textContent = resMsg;
+    if (great) { sfx("win"); confetti(140); } else { sfx("encourage"); }
+
     showScreen("results");
   }
 
   // ---- 全域事件 ----
   function bindGlobalEvents() {
     el.btnSubmit.addEventListener("click", () => submitAnswers(false));
-    el.btnNext.addEventListener("click", nextRound);
-    el.btnRestart.addEventListener("click", restartGame);
-    el.btnPlayAgain.addEventListener("click", () => startGame(state.difficulty));
-    el.btnHome.addEventListener("click", () => showScreen("start"));
+    el.btnNext.addEventListener("click", () => { sfx("click"); nextRound(); });
+    el.btnRestart.addEventListener("click", () => { sfx("click"); restartGame(); });
+    el.btnPlayAgain.addEventListener("click", () => { sfx("click"); startGame(state.difficulty); });
+    el.btnHome.addEventListener("click", () => { sfx("click"); showScreen("start"); });
+
+    // 靜音切換
+    if (el.btnMute) {
+      updateMuteIcon();
+      el.btnMute.addEventListener("click", () => {
+        const m = window.WG_sound ? !window.WG_sound.isMuted() : true;
+        if (window.WG_sound) window.WG_sound.setMuted(m);
+        updateMuteIcon();
+        if (!m) sfx("click");
+      });
+    }
 
     // Enter 鍵：作答中→送出；已送出→下一題（輸入法組字中的 Enter 不觸發）
     document.addEventListener("keydown", (e) => {

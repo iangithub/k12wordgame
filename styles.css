@@ -144,7 +144,7 @@ body {
   margin-bottom: 18px;
 }
 .topbar__name { font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); letter-spacing: 1px; }
-.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stats { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
 .stat {
   display: flex;
   flex-direction: column;
@@ -272,11 +272,27 @@ body {
 
 .feedback {
   margin: 16px 0 0;
-  min-height: 1.6em;
+  min-height: 2.4em;
   text-align: center;
-  font-size: 1.15rem;
-  font-weight: 700;
+}
+.feedback__main {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
   color: var(--primary-dark);
+}
+.feedback__detail {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.feedback--pop .feedback__main { animation: pop 0.45s ease; }
+@keyframes pop {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.14); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* 底部按鈕 */
@@ -339,4 +355,49 @@ body {
   .answer-input { height: 60px; font-size: 2.1rem; }
   .difficulty-options { grid-template-columns: 1fr; }
   .results-grid { grid-template-columns: 1fr; }
+}
+
+/* ============ 音效靜音鈕 ============ */
+.btn-mute {
+  font-size: 1.4rem;
+  line-height: 1;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease;
+}
+.btn-mute:hover { transform: scale(1.08); background: #e2e8f0; }
+.btn-mute:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.btn-mute.is-muted { opacity: 0.55; }
+
+/* ============ 慶祝彩帶 ============ */
+.confetti-piece {
+  position: fixed;
+  top: -14px;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  z-index: 9999;
+  pointer-events: none;
+  animation: confetti-fall 1.5s linear forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(-14px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(600deg); opacity: 0.85; }
+}
+
+/* ============ 結算總評 ============ */
+.results-message {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin: 6px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece { display: none; }
+  .feedback--pop .feedback__main { animation: none; }
 }

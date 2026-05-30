@@ -41,6 +41,7 @@
           <div class="stat"><span class="stat__label">題號</span><span id="stat-round" class="stat__value">1 / 1</span></div>
           <div class="stat"><span class="stat__label">剩餘時間</span><span id="stat-time" class="stat__value">--</span></div>
         </div>
+        <button id="btn-mute" class="btn-mute" type="button" aria-label="靜音">🔊</button>
       </header>
 
       <main class="play">
@@ -69,6 +70,7 @@
     <section id="results-screen" class="screen" hidden>
       <div class="card results-card">
         <h1 class="title">遊戲結束 🎉</h1>
+        <p id="res-message" class="results-message"></p>
         <div class="results-grid">
           <div class="result-box result-box--score">
             <span class="result-box__label">總分</span>
@@ -100,6 +102,7 @@
   <script src="questions.js"></script>
   <script src="data/dict.js"></script>
   <script src="validator.js"></script>
+  <script src="sound.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
