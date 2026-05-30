@@ -77,6 +77,9 @@
     encourage: function () { play([{ f: F.E5, t: 0, d: 0.2 }, { f: F.A5, t: 0.14, d: 0.3 }]); },
     // 按鈕點擊
     click: function () { play([{ f: F.A5, t: 0, d: 0.06, g: 0.12 }]); },
+    // 倒數滴答（最後 10 秒）；最後 3 秒用較高、較急促的音
+    tick: function () { play([{ f: F.A5, t: 0, d: 0.05, g: 0.07 }]); },
+    tickUrgent: function () { play([{ f: F.D6, t: 0, d: 0.08, g: 0.13 }]); },
 
     isMuted: function () { return muted; },
     setMuted: function (m) {

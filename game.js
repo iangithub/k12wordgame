@@ -146,6 +146,20 @@
     }
   }
 
+  // 答對格子的星星動畫（自含、無資產；無 document 時略過）
+  function starBurst(rowEl) {
+    if (typeof document === "undefined" || !rowEl) return;
+    for (let i = 0; i < 5; i++) {
+      const s = document.createElement("span");
+      s.className = "star-pop";
+      s.textContent = "⭐";
+      s.style.left = 20 + Math.random() * 60 + "%";
+      s.style.animationDelay = i * 0.05 + "s";
+      rowEl.appendChild(s);
+      setTimeout(function () { s.remove(); }, 900);
+    }
+  }
+
   // ---- 開始一場新遊戲 ----
   function startGame(difficultyId) {
     state.difficulty = difficultyId;
@@ -230,6 +244,7 @@
     state.timerId = window.setInterval(() => {
       state.timeLeft -= 1;
       renderTime();
+      if (state.timeLeft <= 10 && state.timeLeft > 0) sfx(state.timeLeft <= 3 ? "tickUrgent" : "tick");
       if (state.timeLeft <= 0) {
         clearTimer();
         submitAnswers(true); // 時間到自動送出
@@ -279,6 +294,7 @@
         input.classList.add("answer-input--correct");
         status.classList.add("status--correct");
         status.textContent = "正確 ✓";
+        starBurst(row);
       } else if (value === "") {
         status.classList.add("status--missed");
         status.textContent = "未作答";
