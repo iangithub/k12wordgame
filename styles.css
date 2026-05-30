@@ -1,0 +1,342 @@
+/* ============================================================
+   舉一反三 中文字遊戲 — 樣式
+   設計目標：K12 學生友善（大字、圓角、高對比、可在手機／平板使用）
+   ============================================================ */
+
+:root {
+  --bg: #eef2ff;
+  --bg-grad-1: #c7d2fe;
+  --bg-grad-2: #fbcfe8;
+  --surface: #ffffff;
+  --ink: #1e293b;
+  --ink-soft: #64748b;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+  --green: #16a34a;
+  --green-bg: #dcfce7;
+  --red: #dc2626;
+  --red-bg: #fee2e2;
+  --amber: #ca8a04;
+  --amber-bg: #fef9c3;
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(79, 70, 229, 0.15);
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", "PingFang TC", "Microsoft JhengHei",
+    "Noto Sans TC", system-ui, sans-serif;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--bg-grad-1), var(--bg) 45%, var(--bg-grad-2));
+  background-attachment: fixed;
+  line-height: 1.6;
+}
+
+[hidden] { display: none !important; }
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* ---- 畫面切換 ---- */
+.screen { animation: fade-in 0.35s ease; }
+.screen--active { display: block; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- 卡片容器 ---- */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 26px;
+}
+
+/* ---- 標題 ---- */
+.title {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  margin: 0 0 4px;
+  text-align: center;
+  color: var(--primary-dark);
+  letter-spacing: 2px;
+}
+.title__spark { color: var(--accent); }
+.subtitle {
+  text-align: center;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+  font-size: 1.1rem;
+}
+
+/* ============ 開始畫面 ============ */
+.start-card { max-width: 720px; margin: 0 auto; }
+
+.howto {
+  background: #f8fafc;
+  border: 2px dashed #c7d2fe;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.howto__head { margin: 0 0 8px; color: var(--primary-dark); font-size: 1.15rem; }
+.howto__list { margin: 0; padding-left: 1.2em; }
+.howto__list li { margin-bottom: 4px; }
+.howto__example {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--amber-bg);
+  border-radius: 12px;
+  font-size: 0.98rem;
+}
+
+.pick-head { text-align: center; margin: 8px 0 16px; font-size: 1.2rem; }
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.difficulty-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 12px;
+  border: 3px solid transparent;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #eef2ff, #e0e7ff);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  font: inherit;
+  color: var(--ink);
+}
+.difficulty-btn:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
+.difficulty-btn:focus-visible { outline: 3px solid var(--primary-dark); outline-offset: 2px; }
+.difficulty-btn__emoji { font-size: 2.4rem; line-height: 1; }
+.difficulty-btn__name { font-size: 1.35rem; font-weight: 700; }
+.difficulty-btn__time { font-size: 0.95rem; color: var(--ink-soft); }
+.pick-note { text-align: center; color: var(--ink-soft); font-size: 0.9rem; margin: 16px 0 0; }
+
+/* ============ 遊戲畫面 ============ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 20px;
+  margin-bottom: 18px;
+}
+.topbar__name { font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); letter-spacing: 1px; }
+.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+  padding: 6px 14px;
+  background: #f1f5f9;
+  border-radius: 14px;
+}
+.stat__label { font-size: 0.78rem; color: var(--ink-soft); }
+.stat__value { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+#stat-time.time--low { color: var(--red); animation: pulse 0.8s infinite; }
+@keyframes pulse { 50% { transform: scale(1.18); } }
+
+.play {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+/* 左：注音卡 */
+.zhuyin-wrap {
+  position: sticky;
+  top: 16px;
+  text-align: center;
+}
+.zhuyin-label { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 8px; }
+.zhuyin-card {
+  background: linear-gradient(160deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-size: clamp(4rem, 12vw, 6.5rem);
+  font-weight: 800;
+  padding: 28px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+/* 右：答題列 */
+.answers {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+}
+.rule-text {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: #eef2ff;
+  border-left: 5px solid var(--primary);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+.answer-rows { display: flex; flex-direction: column; gap: 14px; }
+
+.answer-row {
+  display: grid;
+  grid-template-columns: 96px 1fr 110px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.component-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fff7ed, #fde68a);
+  border: 3px solid var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+.component-card__tag {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 0.75rem;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+.component-card__char {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #92400e;
+  line-height: 1;
+}
+
+.answer-input {
+  width: 100%;
+  height: 72px;
+  text-align: center;
+  font-size: 2.6rem;
+  font-weight: 700;
+  border: 3px solid #cbd5e1;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.answer-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.18); }
+.answer-input:disabled { background: #f8fafc; }
+.answer-input--correct { border-color: var(--green); background: var(--green-bg); }
+.answer-input--wrong { border-color: var(--red); background: var(--red-bg); }
+
+.status {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 8px 6px;
+  border-radius: 12px;
+}
+.status--pending { background: #e2e8f0; color: var(--ink-soft); }
+.status--missed  { background: var(--amber-bg); color: var(--amber); }
+.status--correct { background: var(--green-bg); color: var(--green); }
+.status--wrong   { background: var(--red-bg); color: var(--red); }
+
+.feedback {
+  margin: 16px 0 0;
+  min-height: 1.6em;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+/* 底部按鈕 */
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.btn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  color: #fff;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.btn--primary { background: linear-gradient(160deg, var(--primary), var(--primary-dark)); }
+.btn--accent  { background: linear-gradient(160deg, var(--accent), var(--accent-dark)); }
+.btn--ghost   { background: #fff; color: var(--primary-dark); border: 2px solid #c7d2fe; }
+
+/* ============ 結算畫面 ============ */
+.results-card { max-width: 640px; margin: 0 auto; text-align: center; }
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 22px 0;
+}
+.result-box {
+  background: #f1f5f9;
+  border-radius: var(--radius);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.result-box--score { background: linear-gradient(160deg, #eef2ff, #e0e7ff); }
+.result-box__label { color: var(--ink-soft); font-size: 0.95rem; }
+.result-box__value { font-size: 2rem; font-weight: 800; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
+.results-bonus { font-size: 1.05rem; color: var(--accent-dark); font-weight: 700; min-height: 1.4em; }
+.results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+
+/* ============ 響應式（手機／窄螢幕） ============ */
+@media (max-width: 680px) {
+  .play { grid-template-columns: 1fr; }
+  .zhuyin-wrap { position: static; }
+  .zhuyin-card { min-height: 120px; padding: 18px; }
+  .answer-row { grid-template-columns: 76px 1fr; grid-template-areas: "card input" "status status"; }
+  .component-card { width: 76px; height: 76px; }
+  .component-card__char { font-size: 2.3rem; }
+  .status { grid-area: status; }
+  .answer-input { height: 60px; font-size: 2.1rem; }
+  .difficulty-options { grid-template-columns: 1fr; }
+  .results-grid { grid-template-columns: 1fr; }
+}
